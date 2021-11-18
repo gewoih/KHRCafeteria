@@ -4,25 +4,31 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:local="clr-namespace:KHRCafeteria"
+		xmlns:vm="clr-namespace:KHRCafeteria.ViewModels"
 		mc:Ignorable="d"
 		Title="MainWindow"
 		Height="450" Width="800"
 		FontSize="25">
+
+	<Window.DataContext>
+		<vm:MainWindowViewModel/>
+	</Window.DataContext>
+	
 	<Grid>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition/>
-			<ColumnDefinition/>
-		</Grid.ColumnDefinitions>
-		
 		<Grid.RowDefinitions>
-			<RowDefinition/>
-			<RowDefinition/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="8*"/>
 		</Grid.RowDefinitions>
 
-		<Menu>
-			<MenuItem Header="Журнал обедов"/>
-			<MenuItem Header="Компании"/>
-			<MenuItem Header="Сотрудники"/>
+		<Menu Grid.Row="0" VerticalAlignment="Center">
+			<MenuItem Header="Журнал обедов" Command="{Binding ChangeMenuIndexCommand}" CommandParameter="1"/>
+			<MenuItem Header="Компании" Command="{Binding ChangeMenuIndexCommand}" CommandParameter="2"/>
+			<MenuItem Header="Сотрудники" Command="{Binding ChangeMenuIndexCommand}" CommandParameter="3"/>
+			<MenuItem Header="Отчеты" Command="{Binding ChangeMenuIndexCommand}" CommandParameter="4"/>
 		</Menu>
+
+		<DockPanel Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+			<ContentControl Content="{Binding MainContentControl}"/>
+		</DockPanel>
 	</Grid>
 </Window>

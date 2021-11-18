@@ -16,8 +16,8 @@ namespace KHRCafeteria.DataContext
 
 		public BaseDataContext()
 		{
-			Database.EnsureDeleted();
-			Database.EnsureCreated();
+			//Database.EnsureDeleted();
+			//Database.EnsureCreated();
 		}
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -25,8 +25,8 @@ namespace KHRCafeteria.DataContext
 			if (!optionsBuilder.IsConfigured)
 			{
 				optionsBuilder.UseMySql(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString, new MySqlServerVersion(new Version(5, 7, 27)));
-				optionsBuilder.EnableSensitiveDataLogging(true);
-				optionsBuilder.LogTo(message => System.Diagnostics.Debug.WriteLine(message));
+				//optionsBuilder.EnableSensitiveDataLogging(true);
+				//optionsBuilder.LogTo(message => System.Diagnostics.Debug.WriteLine(message));
 			}
 		}
 	}

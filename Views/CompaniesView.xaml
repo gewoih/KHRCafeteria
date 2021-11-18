@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="KHRCafeteria.Views.CompaniesView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:KHRCafeteria.Views"
+		xmlns:vm="clr-namespace:KHRCafeteria.ViewModels"
+        mc:Ignorable="d"
+		Height="Auto" Width="Auto">
+
+	<UserControl.DataContext>
+		<vm:CompaniesViewModel/>
+	</UserControl.DataContext>
+	
+    <Grid>
+		<DataGrid IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding Companies}" SelectedItem="{Binding SelectedCompany}">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="ID" Binding="{Binding Id}"/>
+				<DataGridTextColumn Header="Наименование компании" Binding="{Binding Name}"/>
+			</DataGrid.Columns>
+
+			<DataGrid.ContextMenu>
+				<ContextMenu>
+					<MenuItem Header="Добавить компанию" Command="{Binding ShowNewCompanyWindowCommand}"/>
+					<Separator/>
+					<MenuItem Header="Удалить компанию" Command="{Binding RemoveCompanyCommand}"/>
+				</ContextMenu>
+			</DataGrid.ContextMenu>
+		</DataGrid>
+    </Grid>
+</UserControl>
