@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using KHRCafeteria.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Configuration;
 
@@ -6,10 +7,10 @@ namespace KHRCafeteria.DataContext
 {
 	public class BaseDataContext : DbContext
 	{
-		/*public DbSet<User> Users { get; set; }
-		public DbSet<Stock> Stocks { get; set; }
-		public DbSet<StockQuote> StocksQuotes { get; set; }
-		public DbSet<LogRecord> LogRecords { get; set; }*/
+		public DbSet<Employee> Employees { get; set; }
+		public DbSet<Company> Companies { get; set; }
+		public DbSet<Card> Cards { get; set; }
+		public DbSet<Lunch> Lunches { get; set; }
 
 		public BaseDataContext(DbContextOptions<BaseDataContext> contextOptions) : base(contextOptions) { }
 
