@@ -1,0 +1,44 @@
+﻿<Window x:Class="KHRCafeteria.Views.NewEmployeeView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:KHRCafeteria.Views"
+        mc:Ignorable="d"
+        Title="Создание нового сотрудника" Height="400" Width="600"
+		FontSize="22"
+		WindowStartupLocation="CenterScreen">
+    <Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="5*"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+
+		<DockPanel Margin="50">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition/>
+					<RowDefinition/>
+					<RowDefinition/>
+					<RowDefinition/>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+
+				<TextBlock Grid.Row="0" Text="Имя: " HorizontalAlignment="Right" VerticalAlignment="Center"/>
+				<TextBlock Grid.Row="1" Text="Дата рождения: " HorizontalAlignment="Right" VerticalAlignment="Center"/>
+				<TextBlock Grid.Row="2" Text="Компания: " HorizontalAlignment="Right" VerticalAlignment="Center"/>
+				<TextBlock Grid.Row="3" Text="Карта: " HorizontalAlignment="Right" VerticalAlignment="Center"/>
+
+				<TextBox Grid.Row="0" Grid.Column="1" Text="{Binding NewEmployee.Name, UpdateSourceTrigger=PropertyChanged}"/>
+				<DatePicker Grid.Row="1" Grid.Column="1" Text="{Binding NewCompany.DateOfBirth, UpdateSourceTrigger=PropertyChanged}"/>
+				<ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Companies}" Text="{Binding NewCompany.Company, UpdateSourceTrigger=PropertyChanged}"/>
+				<TextBox Grid.Row="3" Grid.Column="1" Text="{Binding NewCompany.Card, UpdateSourceTrigger=PropertyChanged}"/>
+			</Grid>
+		</DockPanel>
+
+		<Button Grid.Row="1" Content="Добавить компанию" Background="DarkBlue" Command="{Binding AddCompanyCommand}"/>
+	</Grid>
+</Window>

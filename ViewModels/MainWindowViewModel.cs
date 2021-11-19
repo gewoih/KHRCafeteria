@@ -52,7 +52,8 @@ namespace KHRCafeteria.ViewModels
 						MainContentControl = new CompaniesView();
 					break;
 				case 3:
-					//
+					if (MainContentControl is not EmployeesView)
+						MainContentControl = new EmployeesView();
 					break;
 				case 4:
 					//

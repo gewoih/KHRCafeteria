@@ -18,7 +18,6 @@ namespace KHRCafeteria.ViewModels
 		public CompaniesViewModel()
 		{
 			this.Companies = new ObservableCollection<Company>(new CompaniesRepository(new BaseDataContext()).GetAll());
-			this.NewCompany = new Company();
 
 			this.ShowNewCompanyWindowCommand = new RelayCommand(OnShowNewCompanyWindowCommandExecuted, CanShowNewCompanyWindowCommandExecute);
 			this.AddCompanyCommand = new RelayCommand(OnAddCompanyCommandExecuted, CanAddCompanyCommandExecute);
@@ -61,6 +60,7 @@ namespace KHRCafeteria.ViewModels
 		private bool CanShowNewCompanyWindowCommandExecute(object p) => true;
 		private void OnShowNewCompanyWindowCommandExecuted(object p)
 		{
+			this.NewCompany = new Company();
 			this.NewCompanyView = new NewCompanyView(this);
 			this.NewCompanyView.ShowDialog();
 		}
@@ -75,7 +75,6 @@ namespace KHRCafeteria.ViewModels
 				if (repository.GetAll().FirstOrDefault(c => c.Name == this.NewCompany.Name) == null)
 				{
 					this.Companies.Add(repository.Create(this.NewCompany));
-					this.NewCompany = new Company();
 					this.NewCompanyView.Close();
 
 					MessageBox.Show($"Компания '{this.NewCompany.Name}' успешно добавлена.");
