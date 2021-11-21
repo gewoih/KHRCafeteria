@@ -17,5 +17,19 @@ namespace KHRCafeteria.Models
 			get => _IsActive;
 			set => Set(ref _IsActive, value);
 		}
+
+		private int _EmployeeId;
+		public int EmployeeId
+		{
+			get => _EmployeeId;
+			set => Set(ref _EmployeeId, value);
+		}
+
+		private Employee _Employee;
+		public Employee Employee
+		{
+			get => _Employee;
+			set => Set(ref _Employee, value);
+		}
 	}
 }

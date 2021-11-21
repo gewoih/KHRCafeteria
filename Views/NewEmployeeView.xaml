@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KHRCafeteria.Views"
+		xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="Создание нового сотрудника" Height="400" Width="600"
 		FontSize="22"
@@ -32,13 +33,13 @@
 				<TextBlock Grid.Row="2" Text="Компания: " HorizontalAlignment="Right" VerticalAlignment="Center"/>
 				<TextBlock Grid.Row="3" Text="Карта: " HorizontalAlignment="Right" VerticalAlignment="Center"/>
 
-				<TextBox Grid.Row="0" Grid.Column="1" Text="{Binding NewEmployee.Name, UpdateSourceTrigger=PropertyChanged}"/>
-				<DatePicker Grid.Row="1" Grid.Column="1" Text="{Binding NewCompany.DateOfBirth, UpdateSourceTrigger=PropertyChanged}"/>
-				<ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Companies}" Text="{Binding NewCompany.Company, UpdateSourceTrigger=PropertyChanged}"/>
-				<TextBox Grid.Row="3" Grid.Column="1" Text="{Binding NewCompany.Card, UpdateSourceTrigger=PropertyChanged}"/>
+				<TextBox Grid.Row="0" Grid.Column="1" Text="{Binding NewEmployee.Name, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
+				<DatePicker Grid.Row="1" Grid.Column="1" Text="{Binding NewEmployee.DateOfBirth, UpdateSourceTrigger=PropertyChanged}"  VerticalAlignment="Center"/>
+				<ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Companies, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Name" SelectedItem="{Binding NewEmployee.Company, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
+				<TextBox Grid.Row="3" Grid.Column="1" Text="{Binding NewEmployee.Card.UID, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
 			</Grid>
 		</DockPanel>
 
-		<Button Grid.Row="1" Content="Добавить компанию" Background="DarkBlue" Command="{Binding AddCompanyCommand}"/>
+		<Button Grid.Row="1" Content="Добавить сотрудника" Background="DarkBlue" Command="{Binding AddEmployeeCommand}" VerticalAlignment="Stretch"/>
 	</Grid>
 </Window>

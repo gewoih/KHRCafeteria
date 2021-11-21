@@ -20,6 +20,13 @@ namespace KHRCafeteria.Models
 			set => Set(ref _DateOfBirth, value);
 		}
 
+		private int _CardId;
+		public int CardId
+		{
+			get => _CardId;
+			set => Set(ref _CardId, value);
+		}
+
 		private Card _Card;
 		public Card Card
 		{

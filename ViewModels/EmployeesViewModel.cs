@@ -27,13 +27,19 @@ namespace KHRCafeteria.ViewModels
 
 		#region Properties
 		private NewEmployeeView _NewEmployeeView;
-		private List<Company> _Companies;
 
 		private ObservableCollection<Employee> _Employees;
 		public ObservableCollection<Employee> Employees
 		{
 			get => _Employees;
 			set => Set(ref _Employees, value);
+		}
+
+		private ObservableCollection<Company> _Companies;
+		public ObservableCollection<Company> Companies
+		{
+			get => _Companies;
+			set => Set(ref _Companies, value);
 		}
 
 		private Employee _SelectedEmployee;
@@ -56,8 +62,8 @@ namespace KHRCafeteria.ViewModels
 		private bool CanShowNewEmployeeWindowCommandExecute(object p) => true;
 		private void OnShowNewEmployeeWindowCommandExecuted(object p)
 		{
-			this.NewEmployee = new Employee();
-			this._Companies = new CompaniesRepository(new BaseDataContext()).GetAll().ToList();
+			this.NewEmployee = new Employee { DateOfBirth = DateTime.Now, Card = new Card(), Company = new Company() };
+			this._Companies = new ObservableCollection<Company>(new CompaniesRepository(new BaseDataContext()).GetAll());
 
 			this._NewEmployeeView = new NewEmployeeView(this);
 			this._NewEmployeeView.ShowDialog();
@@ -77,7 +83,21 @@ namespace KHRCafeteria.ViewModels
 				MessageBox.Show("Выберите компанию для привязки!");
 			else
 			{
-				MessageBox.Show("Сотрудник успешно добавлен.");
+				//Проверка зарегистрирована ли такая карта
+				if (new CardsRepository(new BaseDataContext()).GetAll().FirstOrDefault(c => c.UID == this.NewEmployee.Card.UID) != null)
+					MessageBox.Show("Данная карта уже привязана к другому сотруднику!");
+				else
+				{
+					new EmployeesRepository(new BaseDataContext()).Create(
+						new Employee 
+						{
+							Name = this.NewEmployee.Name,
+							DateOfBirth = this.NewEmployee.DateOfBirth,
+							Company = this.NewEmployee.Company,
+							Card = this.NewEmployee.Card
+						});
+					MessageBox.Show("Сотрудник успешно добавлен.");
+				}
 			}
 		}
 		#endregion
