@@ -17,7 +17,7 @@ namespace KHRCafeteria.DataContext
 		public BaseDataContext()
 		{
 			//Database.EnsureDeleted();
-			//Database.EnsureCreated();
+			Database.EnsureCreated();
 		}
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -28,6 +28,14 @@ namespace KHRCafeteria.DataContext
 				//optionsBuilder.EnableSensitiveDataLogging(true);
 				//optionsBuilder.LogTo(message => System.Diagnostics.Debug.WriteLine(message));
 			}
+		}
+
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
+		{
+			modelBuilder.Entity<Employee>()
+				.HasOne(e => e.Card)
+				.WithOne(c => c.Employee)
+				.HasForeignKey<Card>(c => c.EmployeeId);
 		}
 	}
 }

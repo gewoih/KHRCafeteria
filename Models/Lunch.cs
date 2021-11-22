@@ -12,11 +12,25 @@ namespace KHRCafeteria.Models
 			set => Set(ref _Employee, value);
 		}
 
+		private Card _Card;
+		public Card Card
+		{
+			get => _Card;
+			set => Set(ref _Card, value);
+		}
+
 		private DateTime _DateTime;
 		public DateTime DateTime
 		{
 			get => _DateTime;
 			set => Set(ref _DateTime, value);
+		}
+
+		private double _Price;
+		public double Price
+		{
+			get => _Price;
+			set => Set(ref _Price, value);
 		}
 
 		private bool _IsCompleted;

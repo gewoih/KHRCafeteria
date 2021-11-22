@@ -41,7 +41,8 @@ namespace KHRCafeteria.ViewModels
 			switch (this.SelectedMenuIndex)
 			{
 				case 1:
-					//
+					if (MainContentControl is not LunchesView)
+						MainContentControl = new LunchesView();
 					break;
 				case 2:
 					if (MainContentControl is not CompaniesView)
