@@ -17,7 +17,7 @@
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="ID" Binding="{Binding Id}"/>
 				<DataGridTextColumn Header="Имя сотрудника" Binding="{Binding Name}"/>
-				<DataGridTextColumn Header="Дата рождения" Binding="{Binding DateOfBirth}"/>
+				<DataGridTextColumn Header="Дата рождения" Binding="{Binding DateOfBirth, StringFormat=\{0:dd.MM.yyyy\}г., ConverterCulture=ru}"/>
 				<DataGridTextColumn Header="Компания" Binding="{Binding Company.Name}"/>
 				<DataGridTextColumn Header="Номер карты" Binding="{Binding Card.UID}"/>
 			</DataGrid.Columns>
@@ -25,6 +25,9 @@
 			<DataGrid.ContextMenu>
 				<ContextMenu>
 					<MenuItem Header="Добавить сотрудника" Command="{Binding ShowNewEmployeeWindowCommand}"/>
+					<Separator/>
+					<MenuItem Header="Активировать карту" Command="{Binding ActivateCardCommand}"/>
+					<MenuItem Header="Деактивировать карту" Command="{Binding DeactivateCardCommand}"/>
 					<Separator/>
 					<MenuItem Header="Удалить сотрудника" Command="{Binding RemoveEmployeeCommand}"/>
 				</ContextMenu>

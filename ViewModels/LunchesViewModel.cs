@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Media;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -65,8 +67,12 @@ namespace KHRCafeteria.ViewModels
 								Card = findedCard,
 								Price = 200,
 								DateTime = DateTime.Now,
-								IsCompleted = true
+								IsCompleted = findedCard.IsActive
 							}));
+
+						//Звук ошибки если карта неактивирована
+						if (!findedCard.IsActive)
+							new SoundPlayer(Assembly.GetExecutingAssembly().GetManifestResourceStream("Error.wav")).Play();
 					}
 					else
 						MessageBox.Show("У данной карты нет привязки к сотруднику!");

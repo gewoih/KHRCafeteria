@@ -22,6 +22,8 @@ namespace KHRCafeteria.ViewModels
 			this.ShowNewEmployeeWindowCommand = new RelayCommand(OnShowNewEmployeeWindowCommandExecuted, CanShowNewEmployeeWindowCommandExecute);
 			this.AddEmployeeCommand = new RelayCommand(OnAddEmployeeCommandExecuted, CanAddEmployeeCommandExecute);
 			this.RemoveEmployeeCommand = new RelayCommand(OnRemoveEmployeeCommandExecuted, CanRemoveEmployeeCommandExecute);
+			this.ActivateCardCommand = new RelayCommand(OnActivateCardCommandExecuted, CanActivateCardCommandExecute);
+			this.DeactivateCardCommand = new RelayCommand(OnDeactivateCardCommandExecuted, CanDeactivateCardCommandExecute);
 		}
 		#endregion
 
@@ -103,7 +105,13 @@ namespace KHRCafeteria.ViewModels
 					//Создаем сотрудника
 					this.NewEmployee = new EmployeesRepository(new BaseDataContext()).Create(this.NewEmployee);
 					//Создаем карту
-					NewEmployee.Card = CardsRepository.Create(new Card { UID = this.NewEmployee.Card.UID, Employee = NewEmployee });
+					NewEmployee.Card = CardsRepository.Create(
+						new Card 
+						{
+							UID = this.NewEmployee.Card.UID, 
+							Employee = NewEmployee,
+							IsActive = true
+						});
 					//Добавляем созданного сотрудника в список
 					this.Employees.Add(NewEmployee);
 
@@ -133,6 +141,42 @@ namespace KHRCafeteria.ViewModels
 				this.Employees.Remove(this.SelectedEmployee);
 
 				MessageBox.Show($"Сотрудник '{deletedEmployeeName}' успешно удален.");
+			}
+		}
+
+		public ICommand ActivateCardCommand { get; }
+		private bool CanActivateCardCommandExecute(object p) => !this.SelectedEmployee.Card.IsActive;
+		private void OnActivateCardCommandExecuted(object p)
+		{
+			//Спрашиваем пользователя
+			DialogResult dialogResult = MessageBox.Show($"Вы действительно хотите активировать карту [{this.SelectedEmployee.Card.UID}] сотрудника [{this.SelectedEmployee.Name}]?",
+														"Активация карты",
+														MessageBoxButtons.YesNo);
+
+			if (dialogResult == DialogResult.Yes)
+			{
+				this.SelectedEmployee.Card.IsActive = true;
+				new CardsRepository(new BaseDataContext()).Update(this.SelectedEmployee.Card);
+
+				MessageBox.Show($"Карта сотрудника [{this.SelectedEmployee.Name}] активирована.");
+			}
+		}
+
+		public ICommand DeactivateCardCommand { get; }
+		private bool CanDeactivateCardCommandExecute(object p) => this.SelectedEmployee.Card.IsActive;
+		private void OnDeactivateCardCommandExecuted(object p)
+		{
+			//Спрашиваем пользователя
+			DialogResult dialogResult = MessageBox.Show($"Вы действительно хотите деактивировать карту [{this.SelectedEmployee.Card.UID}] сотрудника [{this.SelectedEmployee.Name}]?",
+														"Активация карты",
+														MessageBoxButtons.YesNo);
+
+			if (dialogResult == DialogResult.Yes)
+			{
+				this.SelectedEmployee.Card.IsActive = false;
+				new CardsRepository(new BaseDataContext()).Update(this.SelectedEmployee.Card);
+
+				MessageBox.Show($"Карта сотрудника [{this.SelectedEmployee.Name}] деактивирована.");
 			}
 		}
 		#endregion

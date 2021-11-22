@@ -16,7 +16,7 @@ namespace KHRCafeteria.ViewModels
 		#endregion
 
 		#region Properties
-		private object _MainContentControl;
+		private object _MainContentControl = new LunchesView();
 		public object MainContentControl
 		{
 			get => _MainContentControl;
