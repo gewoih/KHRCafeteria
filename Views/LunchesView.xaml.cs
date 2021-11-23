@@ -14,5 +14,10 @@ namespace KHRCafeteria.Views
 
 			this.DataGrid.Items.SortDescriptions.Add(new SortDescription("DateTime", ListSortDirection.Descending));
 		}
+
+		private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+		{
+			this.Text.Focus();
+		}
 	}
 }

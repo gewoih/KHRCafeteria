@@ -16,7 +16,7 @@ namespace KHRCafeteria.Repositories
 
 		public override IQueryable<Lunch> GetAll()
 		{
-			return base.GetAll().Include(l => l.Employee).Include(l => l.Card);
+			return base.GetAll();
 		}
 	}
 }

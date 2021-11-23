@@ -59,16 +59,19 @@ namespace KHRCafeteria.ViewModels
 					//Проверяем есть ли у найденной карты владелец. Если нет - ошибка
 					if (findedCard.Employee != null)
 					{
-						//Добавляем новый обед с найденной картой и владельцем этой карты
-						this.Lunches.Add(new LunchesRepository(new BaseDataContext()).Create(
-							new Lunch
-							{
-								Employee = findedCard.Employee,
-								Card = findedCard,
-								Price = 200,
-								DateTime = DateTime.Now,
-								IsCompleted = findedCard.IsActive
-							}));
+						Lunch newLunch = new Lunch
+						{
+							EmployeeName = findedCard.Employee.Name,
+							CardUID = findedCard.UID,
+							//CompanyName = findedCard.Employee.Company.Name, Пофиксить, у Employee не загружен объект Company
+							Price = 200,
+							DateTime = DateTime.Now,
+							IsCompleted = findedCard.IsActive
+						};
+
+						if (newLunch.IsCompleted == true)
+							new LunchesRepository(new BaseDataContext()).Create(newLunch);
+						this.Lunches.Add(newLunch);
 
 						//Звук ошибки если карта неактивирована
 						if (!findedCard.IsActive)

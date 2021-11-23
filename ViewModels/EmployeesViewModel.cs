@@ -84,13 +84,13 @@ namespace KHRCafeteria.ViewModels
 		private void OnAddEmployeeCommandExecuted(object p)
 		{
 			//Проверки на валидность
-			if (this.NewEmployee.Name == String.Empty)
+			if (String.IsNullOrEmpty(this.NewEmployee.Name))
 				MessageBox.Show("Введите имя сотрудника!");
 			else if (this.NewEmployee.DateOfBirth == DateTime.MinValue)
 				MessageBox.Show("Введите дату рождения сотрудника!");
 			else if (this.NewEmployee.Company.Id == 0)
 				MessageBox.Show("Выберите компанию для привязки!");
-			else if (this.NewEmployee.Card.UID == String.Empty)
+			else if (String.IsNullOrEmpty(this.NewEmployee.Card.UID))
 				MessageBox.Show("Отсканируйте карту для привязки!");
 			else
 			{
@@ -135,6 +135,8 @@ namespace KHRCafeteria.ViewModels
 			{
 				//Сохраняем имя удаляемого сотрудника
 				string deletedEmployeeName = this.SelectedEmployee.Name;
+				//Удаляем привязанную к сотруднику карту
+				new CardsRepository(new BaseDataContext()).Delete(this.SelectedEmployee.Card.Id);
 				//Удаляем сотрудника с таким Id из БД
 				new EmployeesRepository(new BaseDataContext()).Delete(this.SelectedEmployee.Id);
 				//Удаляем сотрудника из списка сотрудников
@@ -145,7 +147,7 @@ namespace KHRCafeteria.ViewModels
 		}
 
 		public ICommand ActivateCardCommand { get; }
-		private bool CanActivateCardCommandExecute(object p) => !this.SelectedEmployee.Card.IsActive;
+		private bool CanActivateCardCommandExecute(object p) => this.SelectedEmployee != null && !this.SelectedEmployee.Card.IsActive;
 		private void OnActivateCardCommandExecuted(object p)
 		{
 			//Спрашиваем пользователя
@@ -163,7 +165,7 @@ namespace KHRCafeteria.ViewModels
 		}
 
 		public ICommand DeactivateCardCommand { get; }
-		private bool CanDeactivateCardCommandExecute(object p) => this.SelectedEmployee.Card.IsActive;
+		private bool CanDeactivateCardCommandExecute(object p) => this.SelectedEmployee != null && this.SelectedEmployee.Card.IsActive;
 		private void OnDeactivateCardCommandExecuted(object p)
 		{
 			//Спрашиваем пользователя

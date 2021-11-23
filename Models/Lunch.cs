@@ -5,18 +5,25 @@ namespace KHRCafeteria.Models
 {
 	public class Lunch : Entity
 	{
-		private Employee _Employee;
-		public Employee Employee
+		private string _EmployeeName;
+		public string EmployeeName
 		{
-			get => _Employee;
-			set => Set(ref _Employee, value);
+			get => _EmployeeName;
+			set => Set(ref _EmployeeName, value);
 		}
 
-		private Card _Card;
-		public Card Card
+		private string _CompanyName;
+		public string CompanyName
 		{
-			get => _Card;
-			set => Set(ref _Card, value);
+			get => _CompanyName;
+			set => Set(ref _CompanyName, value);
+		}
+
+		private string _CardUID;
+		public string CardUID
+		{
+			get => _CardUID;
+			set => Set(ref _CardUID, value);
 		}
 
 		private DateTime _DateTime;
