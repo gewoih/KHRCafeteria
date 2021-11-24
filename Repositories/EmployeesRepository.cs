@@ -2,11 +2,7 @@
 using KHRCafeteria.Models;
 using KHRCafeteria.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KHRCafeteria.Repositories
 {
@@ -17,6 +13,15 @@ namespace KHRCafeteria.Repositories
 		public override IQueryable<Employee> GetAll()
 		{
 			return base.GetAll().Include(e => e.Company).Include(e => e.Card).Include(e => e.Lunches);
+		}
+
+		public override void Delete(int id)
+		{
+			Employee EmployeeToDelete = this.GetAll().FirstOrDefault(e => e.Id == id);
+
+			base._dbContext.Cards.Remove(EmployeeToDelete.Card);
+			base._dbContext.Lunches.RemoveRange(EmployeeToDelete.Lunches);
+			base.Delete(id);
 		}
 	}
 }

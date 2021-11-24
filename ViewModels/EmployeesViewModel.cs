@@ -105,15 +105,15 @@ namespace KHRCafeteria.ViewModels
 					//Создаем сотрудника
 					this.NewEmployee = new EmployeesRepository(new BaseDataContext()).Create(this.NewEmployee);
 					//Создаем карту
-					NewEmployee.Card = CardsRepository.Create(
+					this.NewEmployee.Card = CardsRepository.Create(
 						new Card 
 						{
 							UID = this.NewEmployee.Card.UID, 
-							Employee = NewEmployee,
+							Employee = this.NewEmployee,
 							IsActive = true
 						});
 					//Добавляем созданного сотрудника в список
-					this.Employees.Add(NewEmployee);
+					this.Employees.Add(this.NewEmployee);
 
 					//Закрываем окно создания сотрудника
 					this._NewEmployeeView.Close();
@@ -135,8 +135,6 @@ namespace KHRCafeteria.ViewModels
 			{
 				//Сохраняем имя удаляемого сотрудника
 				string deletedEmployeeName = this.SelectedEmployee.Name;
-				//Удаляем привязанную к сотруднику карту
-				new CardsRepository(new BaseDataContext()).Delete(this.SelectedEmployee.Card.Id);
 				//Удаляем сотрудника с таким Id из БД
 				new EmployeesRepository(new BaseDataContext()).Delete(this.SelectedEmployee.Id);
 				//Удаляем сотрудника из списка сотрудников

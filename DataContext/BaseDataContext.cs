@@ -35,7 +35,8 @@ namespace KHRCafeteria.DataContext
 			modelBuilder.Entity<Employee>()
 				.HasOne(e => e.Card)
 				.WithOne(c => c.Employee)
-				.HasForeignKey<Card>(c => c.EmployeeId);
+				.HasForeignKey<Card>(c => c.EmployeeId)
+				.OnDelete(DeleteBehavior.Cascade);
 		}
 	}
 }

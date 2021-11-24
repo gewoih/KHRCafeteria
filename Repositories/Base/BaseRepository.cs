@@ -41,13 +41,13 @@ namespace KHRCafeteria.Repositories.Base
 			return entities;
 		}
 
-		public void Update(T entity)
+		public virtual void Update(T entity)
 		{
 			_dbContext.Entry(entity).State = EntityState.Modified;
 			_dbContext.SaveChanges();
 		}
 
-		public void Delete(int id)
+		public virtual void Delete(int id)
 		{
 			var entity = GetById(id);
 			_dbContext.Entry(entity).State = EntityState.Deleted;

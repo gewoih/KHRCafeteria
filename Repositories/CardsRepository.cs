@@ -12,7 +12,7 @@ namespace KHRCafeteria.Repositories
 
 		public override IQueryable<Card> GetAll()
 		{
-			return base.GetAll().Include(c => c.Employee);
+			return base.GetAll().Include(c => c.Employee.Company);
 		}
 	}
 }
