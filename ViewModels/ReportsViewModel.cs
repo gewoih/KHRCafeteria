@@ -1,4 +1,5 @@
-﻿using iText.Pdfa;
+﻿using iTextSharp.text;
+using iTextSharp.text.pdf;
 using KHRCafeteria.Commands;
 using KHRCafeteria.DataContext;
 using KHRCafeteria.Models;
@@ -7,10 +8,11 @@ using KHRCafeteria.ViewModels.Base;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace KHRCafeteria.ViewModels
@@ -85,7 +87,55 @@ namespace KHRCafeteria.ViewModels
 		private bool CanCreateReportCommandExecute(object p) => this.StartDate != DateTime.MinValue && this.EndDate != DateTime.MinValue && (this.SelectedEmployee != null || this.SelectedCompany != null);
 		private void OnCreateReportCommandExecuted(object p)
 		{
-			//
+			List<Lunch> Lunches = new List<Lunch>(new LunchesRepository(new BaseDataContext()).GetAll().Where(l => (l.DateTime.Date >= this.StartDate.Date && l.DateTime.Date <= this.EndDate.Date)));
+
+			if (Lunches.Count == 0)
+			{
+				MessageBox.Show("В выбранные даты обеды не найдены!");
+				return;
+			}
+			else
+			{
+				Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+				Document doc = new Document(PageSize.A4);
+				FileStream file = new FileStream("C:\\Users\\ranenko\\Desktop\\NewReport.pdf", FileMode.OpenOrCreate);
+				PdfWriter.GetInstance(doc, file);
+				doc.Open();
+
+				string ttf = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), "ARIAL.TTF");
+
+				BaseFont baseFont = BaseFont.CreateFont(ttf, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+				Font font = new Font(baseFont, Font.DEFAULTSIZE, Font.NORMAL);
+
+				PdfPTable table = new PdfPTable(5);
+				PdfPCell cell = new PdfPCell(new Phrase($"Отчет за {DateTime.Now}. Сумма обедов: {Lunches.Sum(l => l.Price)}р.", font));
+
+				cell.Colspan = 5;
+				cell.HorizontalAlignment = 1;
+				cell.Border = 0;
+				table.AddCell(cell);
+
+				table.AddCell(new PdfPCell(new Phrase(new Phrase("#", font))));
+				table.AddCell(new PdfPCell(new Phrase(new Phrase("Компания", font))));
+				table.AddCell(new PdfPCell(new Phrase(new Phrase("Сотрудник", font))));
+				table.AddCell(new PdfPCell(new Phrase(new Phrase("Дата обеда", font))));
+				table.AddCell(new PdfPCell(new Phrase(new Phrase("Стоимость", font))));
+
+				foreach (var lunch in Lunches)
+				{
+					table.AddCell(new Phrase(lunch.Id.ToString(), font));
+					table.AddCell(new Phrase(lunch.Employee.Company.Name, font));
+					table.AddCell(new Phrase(lunch.Employee.Name, font));
+					table.AddCell(new Phrase(lunch.DateTime.ToString(), font));
+					table.AddCell(new Phrase(lunch.Price.ToString() + "р.", font));
+				}
+
+				doc.Add(table);
+				doc.Close();
+
+				MessageBox.Show("Pdf-документ сохранен");
+			}
 		}
 		#endregion
 	}
