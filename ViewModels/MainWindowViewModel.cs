@@ -56,6 +56,9 @@ namespace KHRCafeteria.ViewModels
 					if (MainContentControl is not ReportsView)
 						MainContentControl = new ReportsView();
 					break;
+				case 5:
+					new NewLunchPriceView().ShowDialog();
+					break;
 			}
 		}
 		#endregion

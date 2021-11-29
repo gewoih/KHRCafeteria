@@ -56,7 +56,12 @@ namespace KHRCafeteria.ViewModels
 		public Company SelectedCompany
 		{
 			get => _SelectedCompany;
-			set => Set(ref _SelectedCompany, value);
+			set
+			{
+				if (this.SelectedEmployee != null)
+					this.SelectedEmployee = null;
+				Set(ref _SelectedCompany, value);
+			}
 		}
 
 		private ObservableCollection<Employee> _Employees;
@@ -70,7 +75,12 @@ namespace KHRCafeteria.ViewModels
 		public Employee SelectedEmployee
 		{
 			get => _SelectedEmployee;
-			set => Set(ref _SelectedEmployee, value);
+			set
+			{
+				if (this.SelectedCompany != null)
+					this.SelectedCompany = null;
+				Set(ref _SelectedEmployee, value);
+			}
 		}
 		#endregion
 
@@ -84,10 +94,35 @@ namespace KHRCafeteria.ViewModels
 		}
 
 		public ICommand CreateReportCommand { get; }
-		private bool CanCreateReportCommandExecute(object p) => this.StartDate != DateTime.MinValue && this.EndDate != DateTime.MinValue && (this.SelectedEmployee != null || this.SelectedCompany != null);
+		private bool CanCreateReportCommandExecute(object p) => this.StartDate != DateTime.MinValue && this.EndDate != DateTime.MinValue;
 		private void OnCreateReportCommandExecuted(object p)
 		{
-			List<Lunch> Lunches = new List<Lunch>(new LunchesRepository(new BaseDataContext()).GetAll().Where(l => (l.DateTime.Date >= this.StartDate.Date && l.DateTime.Date <= this.EndDate.Date)));
+			List<Lunch> Lunches;
+			string reportHeader;
+
+			if (this.SelectedCompany != null)
+			{
+				Lunches = new List<Lunch>(new LunchesRepository(new BaseDataContext())
+																	.GetAll()
+																	.Where(l => (l.DateTime.Date >= this.StartDate.Date && l.DateTime.Date <= this.EndDate.Date))
+																	.Where(l => l.Employee.Company == this.SelectedCompany));
+				reportHeader = $"Отчет по компании '{this.SelectedCompany.Name}' за период {this.StartDate.ToShortDateString()}-{this.EndDate.ToShortDateString()} ({Lunches.Sum(l => l.Price)}р.)";
+			}
+			else if (this.SelectedEmployee != null)
+			{
+				Lunches = new List<Lunch>(new LunchesRepository(new BaseDataContext())
+																	.GetAll()
+																	.Where(l => (l.DateTime.Date >= this.StartDate.Date && l.DateTime.Date <= this.EndDate.Date))
+																	.Where(l => l.Employee == this.SelectedEmployee));
+				reportHeader = $"Отчет по сотруднику '{this.SelectedEmployee.Name}' за период {this.StartDate.ToShortDateString()}-{this.EndDate.ToShortDateString()} ({Lunches.Sum(l => l.Price)}р.)";
+			}
+			else
+			{
+				Lunches = new List<Lunch>(new LunchesRepository(new BaseDataContext())
+																	.GetAll()
+																	.Where(l => (l.DateTime.Date >= this.StartDate.Date && l.DateTime.Date <= this.EndDate.Date)));
+				reportHeader = $"Общий отчет за период {this.StartDate.ToShortDateString()}-{this.EndDate.ToShortDateString()} ({Lunches.Sum(l => l.Price)}р.)";
+			}
 
 			if (Lunches.Count == 0)
 			{
@@ -99,7 +134,7 @@ namespace KHRCafeteria.ViewModels
 				Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 				Document doc = new Document(PageSize.A4);
-				FileStream file = new FileStream("C:\\Users\\ranenko\\Desktop\\NewReport.pdf", FileMode.OpenOrCreate);
+				FileStream file = new FileStream($"C:\\Users\\ranenko\\Desktop\\Отчет {DateTime.Now.ToString("f").Replace(":", " ")}.pdf", FileMode.OpenOrCreate);
 				PdfWriter.GetInstance(doc, file);
 				doc.Open();
 
@@ -109,7 +144,7 @@ namespace KHRCafeteria.ViewModels
 				Font font = new Font(baseFont, Font.DEFAULTSIZE, Font.NORMAL);
 
 				PdfPTable table = new PdfPTable(5);
-				PdfPCell cell = new PdfPCell(new Phrase($"Отчет за {DateTime.Now}. Сумма обедов: {Lunches.Sum(l => l.Price)}р.", font));
+				PdfPCell cell = new PdfPCell(new Phrase(reportHeader, font));
 
 				cell.Colspan = 5;
 				cell.HorizontalAlignment = 1;

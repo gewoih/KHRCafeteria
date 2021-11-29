@@ -26,6 +26,7 @@
 			<MenuItem Header="Компании" Command="{Binding ChangeMenuIndexCommand}" CommandParameter="2"/>
 			<MenuItem Header="Сотрудники" Command="{Binding ChangeMenuIndexCommand}" CommandParameter="3"/>
 			<MenuItem Header="Отчеты" Command="{Binding ChangeMenuIndexCommand}" CommandParameter="4"/>
+			<MenuItem Header="Стоимость обеда" Command="{Binding ChangeMenuIndexCommand}" CommandParameter="5"/>
 		</Menu>
 
 		<DockPanel Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">

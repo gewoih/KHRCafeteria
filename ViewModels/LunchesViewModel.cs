@@ -62,32 +62,7 @@ namespace KHRCafeteria.ViewModels
 				CardsRepository cardsRepository = new CardsRepository(new BaseDataContext());
 				//Ищем карту с таким UID
 				Card findedCard = cardsRepository.GetAll().FirstOrDefault(c => c.UID == this.CardUID);
-				if (findedCard != null)
-				{
-					//Проверяем есть ли у найденной карты владелец. Если нет - ошибка
-					if (findedCard.Employee != null)
-					{
-						Lunch newLunch = new Lunch
-						{
-							Employee = findedCard.Employee,
-							Price = 200,
-							DateTime = DateTime.Now
-						};
-
-						//Если карта активна - добавляем обед в базу, если неактивна - выдаем звук с ошибкой
-						if (findedCard.IsActive == true)
-							new LunchesRepository(new BaseDataContext()).Create(newLunch);
-						else
-							new SoundPlayer(Assembly.GetExecutingAssembly().GetManifestResourceStream("Error.wav")).Play();
-
-						//Добавляем обед в список обедов
-						this.Lunches.Add(newLunch);
-					}
-					else
-						MessageBox.Show("У данной карты нет привязки к сотруднику!");
-				}
-				else
-					MessageBox.Show($"Карта с номером '{this.CardUID}' не найдена в системе!");
+				this.CreateLunch(findedCard);
 			}
 			this.CardUID = String.Empty;
 		}
@@ -112,6 +87,27 @@ namespace KHRCafeteria.ViewModels
 
 				MessageBox.Show($"Обед [{deletedLunchId}] успешно удален.");
 			}
+		}
+		#endregion
+
+		#region Methods
+		private void CreateLunch(Card findedCard)
+		{
+			Lunch newLunch = new Lunch
+			{
+				Employee = findedCard == null ? null : findedCard.Employee,
+				Price = new LunchPricesRepository(new BaseDataContext()).GetAll().OrderByDescending(p => p.DateTime).First().Price,
+				DateTime = DateTime.Now
+			};
+
+			//Если карта активна - добавляем обед в базу, если неактивна - выдаем звук с ошибкой
+			if (findedCard != null && findedCard.Employee != null && findedCard.IsActive == true)
+				new LunchesRepository(new BaseDataContext()).Create(newLunch);
+			else
+				new SoundPlayer(Assembly.GetExecutingAssembly().GetManifestResourceStream("Error.wav")).Play();
+
+			//Добавляем обед в список обедов
+			this.Lunches.Add(newLunch);
 		}
 		#endregion
 	}

@@ -1,0 +1,41 @@
+﻿<Window x:Class="KHRCafeteria.Views.NewLunchPriceView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:KHRCafeteria.Views"
+		xmlns:vm="clr-namespace:KHRCafeteria.ViewModels"
+        mc:Ignorable="d"
+        Title="Изменение стоимости обеда" Height="250" Width="400"
+		FontSize="22"
+		WindowStartupLocation="CenterScreen">
+
+	<Window.DataContext>
+		<vm:LunchPricesViewModel/>
+	</Window.DataContext>
+	
+    <Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="5*"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+
+		<DockPanel Margin="10">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition/>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+
+				<TextBlock Text="Стоимость: " HorizontalAlignment="Right" VerticalAlignment="Center"/>
+
+				<TextBox Grid.Column="1" Text="{Binding NewLunchPrice.Price, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
+			</Grid>
+		</DockPanel>
+
+		<Button Grid.Row="1" Content="Изменить стоимость обеда" Background="DarkBlue" Command="{Binding AddLunchPriceCommand}" VerticalAlignment="Stretch"/>
+	</Grid>
+</Window>
