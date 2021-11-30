@@ -44,6 +44,8 @@
 
 			<DataGrid.ContextMenu>
 				<ContextMenu>
+					<MenuItem Header="Пометить оплаченным" Command="{Binding MarkLunchAsPaidCommand}"/>
+					<Separator/>
 					<MenuItem Header="Удалить обед" Command="{Binding RemoveLunchCommand}"/>
 				</ContextMenu>
 			</DataGrid.ContextMenu>

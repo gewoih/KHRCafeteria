@@ -53,8 +53,7 @@ namespace KHRCafeteria.ViewModels
 						MainContentControl = new EmployeesView();
 					break;
 				case 4:
-					if (MainContentControl is not ReportsView)
-						MainContentControl = new ReportsView();
+					new ReportsView().ShowDialog();
 					break;
 				case 5:
 					new NewLunchPriceView().ShowDialog();

@@ -25,5 +25,12 @@ namespace KHRCafeteria.Models
 			get => _Price;
 			set => Set(ref _Price, value);
 		}
+
+		private bool _IsPaid;
+		public bool IsPaid
+		{
+			get => _IsPaid;
+			set => Set(ref _IsPaid, value);
+		}
 	}
 }

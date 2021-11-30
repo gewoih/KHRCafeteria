@@ -82,6 +82,13 @@ namespace KHRCafeteria.ViewModels
 				Set(ref _SelectedEmployee, value);
 			}
 		}
+
+		private bool _OnlyUnpaid;
+		public bool OnlyUnpaid
+		{
+			get => _OnlyUnpaid;
+			set => Set(ref _OnlyUnpaid, value);
+		}
 		#endregion
 
 		#region Commands
@@ -97,33 +104,33 @@ namespace KHRCafeteria.ViewModels
 		private bool CanCreateReportCommandExecute(object p) => this.StartDate != DateTime.MinValue && this.EndDate != DateTime.MinValue;
 		private void OnCreateReportCommandExecuted(object p)
 		{
-			List<Lunch> Lunches;
-			string reportHeader;
+			List<Lunch> Lunches = new List<Lunch>(new LunchesRepository(new BaseDataContext()).GetAll().Where(l => (l.DateTime.Date >= this.StartDate.Date && l.DateTime.Date <= this.EndDate.Date)));
+			string reportHeader = $"Общий отчет за период {this.StartDate.ToShortDateString()}-{this.EndDate.ToShortDateString()}";
 
 			if (this.SelectedCompany != null)
 			{
-				Lunches = new List<Lunch>(new LunchesRepository(new BaseDataContext())
-																	.GetAll()
-																	.Where(l => (l.DateTime.Date >= this.StartDate.Date && l.DateTime.Date <= this.EndDate.Date))
-																	.Where(l => l.Employee.Company == this.SelectedCompany));
-				reportHeader = $"Отчет по компании '{this.SelectedCompany.Name}' за период {this.StartDate.ToShortDateString()}-{this.EndDate.ToShortDateString()} ({Lunches.Sum(l => l.Price)}р.)";
+				Lunches = Lunches.Where(l => l.Employee.Company.Id == this.SelectedCompany.Id).ToList();
+				reportHeader = $"Отчет по компании '{this.SelectedCompany.Name}' " +
+								$"за период {this.StartDate.ToShortDateString()}-{this.EndDate.ToShortDateString()}";
 			}
 			else if (this.SelectedEmployee != null)
 			{
-				Lunches = new List<Lunch>(new LunchesRepository(new BaseDataContext())
-																	.GetAll()
-																	.Where(l => (l.DateTime.Date >= this.StartDate.Date && l.DateTime.Date <= this.EndDate.Date))
-																	.Where(l => l.Employee == this.SelectedEmployee));
-				reportHeader = $"Отчет по сотруднику '{this.SelectedEmployee.Name}' за период {this.StartDate.ToShortDateString()}-{this.EndDate.ToShortDateString()} ({Lunches.Sum(l => l.Price)}р.)";
+				Lunches = Lunches.Where(l => l.Employee.Id == this.SelectedEmployee.Id).ToList();
+				reportHeader = $"Отчет по сотруднику '{this.SelectedEmployee.Name}' " +
+								$"за период {this.StartDate.ToShortDateString()}-{this.EndDate.ToShortDateString()}";
+			}
+
+			if (this.OnlyUnpaid == true)
+			{
+				Lunches = Lunches.Where(l => l.IsPaid == false).ToList();
+				reportHeader += $"\nСумма обедов: {Lunches.Sum(l => l.Price)}р.";
 			}
 			else
 			{
-				Lunches = new List<Lunch>(new LunchesRepository(new BaseDataContext())
-																	.GetAll()
-																	.Where(l => (l.DateTime.Date >= this.StartDate.Date && l.DateTime.Date <= this.EndDate.Date)));
-				reportHeader = $"Общий отчет за период {this.StartDate.ToShortDateString()}-{this.EndDate.ToShortDateString()} ({Lunches.Sum(l => l.Price)}р.)";
+				reportHeader += $"\nСумма оплаченных обедов: {Lunches.Where(l => l.IsPaid == true).Sum(l => l.Price)}р." +
+								$"\nСумма неоплаченных обедов: {Lunches.Where(l => l.IsPaid == false).Sum(l => l.Price)}р.";
 			}
-
+			
 			if (Lunches.Count == 0)
 			{
 				MessageBox.Show("В выбранные даты обеды не найдены!");
@@ -132,9 +139,16 @@ namespace KHRCafeteria.ViewModels
 			else
 			{
 				Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+				SaveFileDialog saveDialog = new SaveFileDialog();
+				saveDialog.Title = "Сохранение отчета";
+				saveDialog.InitialDirectory = Directory.GetCurrentDirectory();
+				saveDialog.FileName = $"Отчет {DateTime.Now.ToString("F").Replace(":", " ")}";
+				saveDialog.Filter = "PDF файлы | *.pdf";
+				if (saveDialog.ShowDialog() == DialogResult.Cancel)
+					return;
 
 				Document doc = new Document(PageSize.A4);
-				FileStream file = new FileStream($"C:\\Users\\ranenko\\Desktop\\Отчет {DateTime.Now.ToString("f").Replace(":", " ")}.pdf", FileMode.OpenOrCreate);
+				FileStream file = new FileStream(saveDialog.FileName, FileMode.OpenOrCreate);
 				PdfWriter.GetInstance(doc, file);
 				doc.Open();
 
@@ -143,10 +157,10 @@ namespace KHRCafeteria.ViewModels
 				BaseFont baseFont = BaseFont.CreateFont(ttf, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 				Font font = new Font(baseFont, Font.DEFAULTSIZE, Font.NORMAL);
 
-				PdfPTable table = new PdfPTable(5);
+				PdfPTable table = new PdfPTable(6);
 				PdfPCell cell = new PdfPCell(new Phrase(reportHeader, font));
 
-				cell.Colspan = 5;
+				cell.Colspan = 6;
 				cell.HorizontalAlignment = 1;
 				cell.Border = 0;
 				table.AddCell(cell);
@@ -156,6 +170,7 @@ namespace KHRCafeteria.ViewModels
 				table.AddCell(new PdfPCell(new Phrase(new Phrase("Сотрудник", font))));
 				table.AddCell(new PdfPCell(new Phrase(new Phrase("Дата обеда", font))));
 				table.AddCell(new PdfPCell(new Phrase(new Phrase("Стоимость", font))));
+				table.AddCell(new PdfPCell(new Phrase(new Phrase("Оплачен", font))));
 
 				foreach (var lunch in Lunches)
 				{
@@ -164,6 +179,7 @@ namespace KHRCafeteria.ViewModels
 					table.AddCell(new Phrase(lunch.Employee.Name, font));
 					table.AddCell(new Phrase(lunch.DateTime.ToString(), font));
 					table.AddCell(new Phrase(lunch.Price.ToString() + "р.", font));
+					table.AddCell(new Phrase(Convert.ToInt32(lunch.IsPaid).ToString(), font));
 				}
 
 				doc.Add(table);

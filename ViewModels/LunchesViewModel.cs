@@ -25,6 +25,7 @@ namespace KHRCafeteria.ViewModels
 
 			this.AddLunchCommand = new RelayCommand(OnAddLunchCommandExecuted, CanAddLunchCommandExecute);
 			this.RemoveLunchCommand = new RelayCommand(OnRemoveLunchCommandExecuted, CanRemoveLunchCommandExecute);
+			this.MarkLunchAsPaidCommand = new RelayCommand(OnMarkLunchAsPaidCommandExecuted, CanMarkLunchAsPaidCommandExecute);
 		}
 		#endregion
 
@@ -52,6 +53,15 @@ namespace KHRCafeteria.ViewModels
 		#endregion
 
 		#region Commands
+		public ICommand MarkLunchAsPaidCommand { get; }
+		private bool CanMarkLunchAsPaidCommandExecute(object p) => this.SelectedLunch.IsPaid == false;
+		public void OnMarkLunchAsPaidCommandExecuted(object p)
+		{
+			this.SelectedLunch.IsPaid = true;
+			new LunchesRepository(new BaseDataContext()).Update(this.SelectedLunch);
+			MessageBox.Show("Обед успешно оплачен!");
+		}
+
 		public ICommand AddLunchCommand { get; }
 		private bool CanAddLunchCommandExecute(object p) => true;
 		public void OnAddLunchCommandExecuted(object p)
