@@ -55,9 +55,6 @@ namespace KHRCafeteria.ViewModels
 				case 4:
 					new ReportsView().ShowDialog();
 					break;
-				case 5:
-					new NewLunchPriceView().ShowDialog();
-					break;
 			}
 		}
 		#endregion

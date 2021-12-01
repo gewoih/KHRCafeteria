@@ -104,7 +104,7 @@ namespace KHRCafeteria.ViewModels
 		private bool CanCreateReportCommandExecute(object p) => this.StartDate != DateTime.MinValue && this.EndDate != DateTime.MinValue;
 		private void OnCreateReportCommandExecuted(object p)
 		{
-			List<Lunch> Lunches = new List<Lunch>(new LunchesRepository(new BaseDataContext()).GetAll().Where(l => (l.DateTime.Date >= this.StartDate.Date && l.DateTime.Date <= this.EndDate.Date)));
+			List<Lunch> Lunches = new List<Lunch>(new LunchesRepository(new BaseDataContext()).GetAll().Where(l => (l.DateTime.Date >= this.StartDate.Date && l.DateTime.Date <= this.EndDate.Date))).OrderByDescending(l => l.DateTime).ToList();
 			string reportHeader = $"Общий отчет за период {this.StartDate.ToShortDateString()}-{this.EndDate.ToShortDateString()}";
 
 			if (this.SelectedCompany != null)
@@ -120,17 +120,13 @@ namespace KHRCafeteria.ViewModels
 								$"за период {this.StartDate.ToShortDateString()}-{this.EndDate.ToShortDateString()}";
 			}
 
+			reportHeader += $"\nОбщая сумма обедов: {Lunches.Sum(l => l.Price)}р." +
+							$"\nСумма оплаченных обедов: {Lunches.Where(l => l.IsPaid == true).Sum(l => l.Price)}р." +
+							$"\nСумма неоплаченных обедов: {Lunches.Where(l => l.IsPaid == false).Sum(l => l.Price)}р.";
+
 			if (this.OnlyUnpaid == true)
-			{
 				Lunches = Lunches.Where(l => l.IsPaid == false).ToList();
-				reportHeader += $"\nСумма обедов: {Lunches.Sum(l => l.Price)}р.";
-			}
-			else
-			{
-				reportHeader += $"\nСумма оплаченных обедов: {Lunches.Where(l => l.IsPaid == true).Sum(l => l.Price)}р." +
-								$"\nСумма неоплаченных обедов: {Lunches.Where(l => l.IsPaid == false).Sum(l => l.Price)}р.";
-			}
-			
+
 			if (Lunches.Count == 0)
 			{
 				MessageBox.Show("В выбранные даты обеды не найдены!");

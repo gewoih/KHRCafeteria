@@ -77,7 +77,7 @@ namespace KHRCafeteria.ViewModels
 		private void OnAddCompanyCommandExecuted(object p)
 		{
 			//Пустое ли имя компании?
-			if (this.NewCompany.Name != String.Empty)
+			if (this.NewCompany.Name != String.Empty && this.NewCompany.LunchPrice != 0)
 			{
 				CompaniesRepository CompaniesRepository = new CompaniesRepository(new BaseDataContext());
 				//Проверяем есть ли в базе компания с таким именем (без учета регистра)
@@ -94,7 +94,7 @@ namespace KHRCafeteria.ViewModels
 					MessageBox.Show("Компания с таким названием уже существует.");
 			}
 			else
-				MessageBox.Show("Введите название компании!");
+				MessageBox.Show("Заполните все поля!");
 		}
 
 		public ICommand RemoveCompanyCommand { get; }

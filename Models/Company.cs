@@ -18,5 +18,12 @@ namespace KHRCafeteria.Models
 			get => _Employees;
 			set => Set(ref _Employees, value);
 		}
+
+		private double _LunchPrice;
+		public double LunchPrice
+		{
+			get => _LunchPrice;
+			set => Set(ref _LunchPrice, value);
+		}
 	}
 }

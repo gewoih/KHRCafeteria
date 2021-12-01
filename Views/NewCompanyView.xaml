@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:KHRCafeteria.Views"
 		xmlns:vm="clr-namespace:KHRCafeteria.ViewModels"
         mc:Ignorable="d"
-        Title="Создание новой компании" Height="300" Width="450"
+        Title="Создание новой компании" Height="250" Width="500"
 		FontSize="22"
 		WindowStartupLocation="CenterScreen">
 	<Grid>
@@ -16,8 +16,22 @@
 		</Grid.RowDefinitions>
 
 		<DockPanel Grid.Row="0" Margin="50" VerticalAlignment="Center">
-			<TextBlock Text="Название: " VerticalAlignment="Center"/>
-			<TextBox Text="{Binding NewCompany.Name, UpdateSourceTrigger=PropertyChanged}"/>
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition/>
+					<RowDefinition/>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+				
+				<TextBlock Grid.Row="0" Text="Название: " VerticalAlignment="Center"/>
+				<TextBlock Grid.Row="1" Text="Стоимость обеда: " VerticalAlignment="Center"/>
+
+				<TextBox Grid.Row="0" Grid.Column="1" Text="{Binding NewCompany.Name, UpdateSourceTrigger=PropertyChanged}"/>
+				<TextBox Grid.Row="1" Grid.Column="1" Text="{Binding NewCompany.LunchPrice, UpdateSourceTrigger=PropertyChanged}"/>
+			</Grid>
 		</DockPanel>
 
 		<Button Grid.Row="1" Content="Добавить компанию" Background="DarkBlue" Command="{Binding AddCompanyCommand}"/>

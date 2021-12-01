@@ -54,7 +54,7 @@ namespace KHRCafeteria.ViewModels
 
 		#region Commands
 		public ICommand MarkLunchAsPaidCommand { get; }
-		private bool CanMarkLunchAsPaidCommandExecute(object p) => this.SelectedLunch.IsPaid == false;
+		private bool CanMarkLunchAsPaidCommandExecute(object p) => this.SelectedLunch != null && this.SelectedLunch.IsPaid == false;
 		public void OnMarkLunchAsPaidCommandExecuted(object p)
 		{
 			this.SelectedLunch.IsPaid = true;
@@ -106,7 +106,7 @@ namespace KHRCafeteria.ViewModels
 			Lunch newLunch = new Lunch
 			{
 				Employee = findedCard == null ? null : findedCard.Employee,
-				Price = new LunchPricesRepository(new BaseDataContext()).GetAll().OrderByDescending(p => p.DateTime).First().Price,
+				Price = findedCard.Employee.Company.LunchPrice,
 				DateTime = DateTime.Now
 			};
 

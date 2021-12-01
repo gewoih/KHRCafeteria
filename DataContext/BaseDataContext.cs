@@ -11,7 +11,6 @@ namespace KHRCafeteria.DataContext
 		public DbSet<Company> Companies { get; set; }
 		public DbSet<Card> Cards { get; set; }
 		public DbSet<Lunch> Lunches { get; set; }
-		public DbSet<LunchPrice> LunchPrices { get; set; }
 
 		public BaseDataContext(DbContextOptions<BaseDataContext> contextOptions) : base(contextOptions) { }
 

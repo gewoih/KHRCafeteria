@@ -31,6 +31,9 @@
 						<DataTrigger Binding="{Binding Id}" Value="0">
 							<Setter Property="Background" Value="Pink"/>
 						</DataTrigger>
+						<DataTrigger Binding="{Binding IsPaid}" Value="True">
+							<Setter Property="Background" Value="LightYellow"/>
+						</DataTrigger>
 					</Style.Triggers>
 				</Style>
 			</DataGrid.ItemContainerStyle>
