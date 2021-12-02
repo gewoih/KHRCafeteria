@@ -17,6 +17,7 @@
 	<Grid Focusable="False">
 		<Grid.InputBindings>
 			<KeyBinding Key="Enter" Command="{Binding AddLunchCommand}" CommandParameter="{Binding ElementName=Text}"/>
+			<KeyBinding Key="Space" Command="{Binding MarkLunchAsPaidCommand}"/>
 		</Grid.InputBindings>
 
 		<Grid.RowDefinitions>

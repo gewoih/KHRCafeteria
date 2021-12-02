@@ -106,7 +106,7 @@ namespace KHRCafeteria.ViewModels
 			Lunch newLunch = new Lunch
 			{
 				Employee = findedCard == null ? null : findedCard.Employee,
-				Price = findedCard.Employee.Company.LunchPrice,
+				Price = findedCard == null ? 0 : findedCard.Employee.Company.LunchPrice,
 				DateTime = DateTime.Now
 			};
 

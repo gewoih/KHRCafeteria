@@ -24,12 +24,15 @@ namespace KHRCafeteria.ViewModels
 			this.RemoveEmployeeCommand = new RelayCommand(OnRemoveEmployeeCommandExecuted, CanRemoveEmployeeCommandExecute);
 			this.ActivateCardCommand = new RelayCommand(OnActivateCardCommandExecuted, CanActivateCardCommandExecute);
 			this.DeactivateCardCommand = new RelayCommand(OnDeactivateCardCommandExecuted, CanDeactivateCardCommandExecute);
+			this.ShowEditEmployeeWindowCommand = new RelayCommand(OnShowEditEmployeeWindowCommandExecuted, CanShowEditEmployeeWindowCommandExecute);
+			this.EditEmployeeCommand = new RelayCommand(OnEditEmployeeCommandExecuted, CanEditEmployeeCommandExecute);
 		}
 		#endregion
 
 		#region Properties
 		//Форма создания нового сотрудника
 		private NewEmployeeView _NewEmployeeView;
+		private EditEmployeeView _EditEmployeeView;
 
 		//Список всех сотрудников
 		private ObservableCollection<Employee> _Employees;
@@ -177,6 +180,61 @@ namespace KHRCafeteria.ViewModels
 				new CardsRepository(new BaseDataContext()).Update(this.SelectedEmployee.Card);
 
 				MessageBox.Show($"Карта сотрудника [{this.SelectedEmployee.Name}] деактивирована.");
+			}
+		}
+
+		public ICommand ShowEditEmployeeWindowCommand { get; }
+		private bool CanShowEditEmployeeWindowCommandExecute(object p) => this.SelectedEmployee != null;
+		private void OnShowEditEmployeeWindowCommandExecuted(object p)
+		{
+			//Список компаний для их отображения в ComboBox
+			this._Companies = new ObservableCollection<Company>(new CompaniesRepository(new BaseDataContext()).GetAll());
+
+			//Создание и вызов окна для создания сотрудника
+			this._EditEmployeeView = new EditEmployeeView(this);
+			this._EditEmployeeView.ShowDialog();
+		}
+
+		public ICommand EditEmployeeCommand { get; }
+		private bool CanEditEmployeeCommandExecute(object p) => true;
+		private void OnEditEmployeeCommandExecuted(object p)
+		{
+			//Проверки на валидность
+			if (String.IsNullOrEmpty(this.SelectedEmployee.Name))
+				MessageBox.Show("Введите имя сотрудника!");
+			else if (this.SelectedEmployee.DateOfBirth == DateTime.MinValue)
+				MessageBox.Show("Введите дату рождения сотрудника!");
+			else if (this.SelectedEmployee.Company.Id == 0)
+				MessageBox.Show("Выберите компанию для привязки!");
+			else if (String.IsNullOrEmpty(this.SelectedEmployee.Card.UID))
+				MessageBox.Show("Отсканируйте карту для привязки!");
+			else
+			{
+				//Спрашиваем пользователя
+				DialogResult dialogResult = MessageBox.Show($"Вы действительно хотите сохранить информацию о сотруднике '{this.SelectedEmployee.Name}' [{this.SelectedEmployee.Id}]?",
+															"Сохранение информации о сотруднике",
+															MessageBoxButtons.YesNo);
+
+				if (dialogResult == DialogResult.Yes)
+				{
+					CardsRepository CardsRepository = new CardsRepository(new BaseDataContext());
+					CardsRepository.Delete(CardsRepository.GetAll().FirstOrDefault(c => c.EmployeeId == this.SelectedEmployee.Id).Id);
+
+					//Обновляем сотрудника
+					new EmployeesRepository(new BaseDataContext()).Update(this.SelectedEmployee);
+					//Создаем карту
+					this.SelectedEmployee.Card = CardsRepository.Create(
+					new Card
+					{
+						UID = this.SelectedEmployee.Card.UID,
+						Employee = this.SelectedEmployee,
+						IsActive = true
+					});
+
+					//Закрываем окно создания сотрудника
+					this._EditEmployeeView.Close();
+					MessageBox.Show("Информация о сотруднике обновлена.");
+				}
 			}
 		}
 		#endregion

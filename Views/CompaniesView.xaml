@@ -24,6 +24,7 @@
 				<ContextMenu>
 					<MenuItem Header="Добавить компанию" Command="{Binding ShowNewCompanyWindowCommand}"/>
 					<Separator/>
+					<MenuItem Header="Редактировать компанию" Command="{Binding ShowEditCompanyWindowCommand}"/>
 					<MenuItem Header="Удалить компанию" Command="{Binding RemoveCompanyCommand}"/>
 				</ContextMenu>
 			</DataGrid.ContextMenu>

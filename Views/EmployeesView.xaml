@@ -29,6 +29,7 @@
 					<MenuItem Header="Активировать карту" Command="{Binding ActivateCardCommand}"/>
 					<MenuItem Header="Деактивировать карту" Command="{Binding DeactivateCardCommand}"/>
 					<Separator/>
+					<MenuItem Header="Редактировать сотрудника" Command="{Binding ShowEditEmployeeWindowCommand}"/>
 					<MenuItem Header="Удалить сотрудника" Command="{Binding RemoveEmployeeCommand}"/>
 				</ContextMenu>
 			</DataGrid.ContextMenu>

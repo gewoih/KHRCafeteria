@@ -22,24 +22,23 @@ namespace KHRCafeteria.ViewModels
 			this.ShowNewCompanyWindowCommand = new RelayCommand(OnShowNewCompanyWindowCommandExecuted, CanShowNewCompanyWindowCommandExecute);
 			this.AddCompanyCommand = new RelayCommand(OnAddCompanyCommandExecuted, CanAddCompanyCommandExecute);
 			this.RemoveCompanyCommand = new RelayCommand(OnRemoveCompanyCommandExecuted, CanRemoveCompanyCommandExecute);
+			this.ShowEditCompanyWindowCommand = new RelayCommand(OnShowEditCompanyWindowCommandExecuted, CanShowEditCompanyWindowCommandExecute);
+			this.EditCompanyCommand = new RelayCommand(OnEditCompanyCommandExecuted, CanEditCompanyCommandExecute);
 		}
 		#endregion
 
 		#region Properties
+		//Форма для создания новой компании
+		private NewCompanyView NewCompanyView;
+		//Форма для редактирования компании
+		private EditCompanyView EditCompanyView;
+
 		//Список компаний для вывода
 		private ObservableCollection<Company> _Companies;
 		public ObservableCollection<Company> Companies
 		{
 			get => _Companies;
 			set => Set(ref _Companies, value);
-		}
-
-		//Форма для создания новой компании
-		private NewCompanyView _NewCompanyView;
-		public NewCompanyView NewCompanyView
-		{
-			get => _NewCompanyView;
-			set => Set(ref _NewCompanyView, value);
 		}
 
 		//Новая компания
@@ -117,6 +116,40 @@ namespace KHRCafeteria.ViewModels
 
 				MessageBox.Show($"Компания '{deletedCompanyName}' успешно удалена.");
 			}
+		}
+
+		public ICommand ShowEditCompanyWindowCommand { get; }
+		private bool CanShowEditCompanyWindowCommandExecute(object p) => this.SelectedCompany != null;
+		private void OnShowEditCompanyWindowCommandExecuted(object p)
+		{
+			//Инициализируем форму для создания компании и вызываем ее
+			this.EditCompanyView = new EditCompanyView(this);
+			this.EditCompanyView.ShowDialog();
+		}
+
+		public ICommand EditCompanyCommand { get; }
+		private bool CanEditCompanyCommandExecute(object p) => this.SelectedCompany != null;
+		private void OnEditCompanyCommandExecuted(object p)
+		{
+			//Пустое ли имя компании?
+			if (this.SelectedCompany.Name != String.Empty && this.SelectedCompany.LunchPrice != 0)
+			{
+				CompaniesRepository CompaniesRepository = new CompaniesRepository(new BaseDataContext());
+				//Спрашиваем пользователя
+				DialogResult dialogResult = MessageBox.Show($"Вы действительно хотите сохранить информацию о компанию '{this.SelectedCompany.Name}' [{this.SelectedCompany.Id}]?",
+															"Сохранение информации о компании",
+															MessageBoxButtons.YesNo);
+
+				if (dialogResult == DialogResult.Yes)
+				{
+					new CompaniesRepository(new BaseDataContext()).Update(this.SelectedCompany);
+					this.EditCompanyView.Close();
+
+					MessageBox.Show($"Информация о компании обновлена.");
+				};
+			}
+			else
+				MessageBox.Show("Заполните все поля!");
 		}
 		#endregion
 	}
