@@ -22,6 +22,7 @@
 					<RowDefinition/>
 					<RowDefinition/>
 					<RowDefinition/>
+					<RowDefinition/>
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition/>
@@ -31,14 +32,16 @@
 				<TextBlock Grid.Row="0" Text="ID сотрудника: " HorizontalAlignment="Right" VerticalAlignment="Center"/>
 				<TextBlock Grid.Row="1" Text="Имя: " HorizontalAlignment="Right" VerticalAlignment="Center"/>
 				<TextBlock Grid.Row="2" Text="Дата рождения: " HorizontalAlignment="Right" VerticalAlignment="Center"/>
-				<TextBlock Grid.Row="3" Text="Компания: " HorizontalAlignment="Right" VerticalAlignment="Center"/>
-				<TextBlock Grid.Row="4" Text="Карта: " HorizontalAlignment="Right" VerticalAlignment="Center"/>
+				<TextBlock Grid.Row="3" Text="Email: " HorizontalAlignment="Right" VerticalAlignment="Center"/>
+				<TextBlock Grid.Row="4" Text="Компания: " HorizontalAlignment="Right" VerticalAlignment="Center"/>
+				<TextBlock Grid.Row="5" Text="Карта: " HorizontalAlignment="Right" VerticalAlignment="Center"/>
 
 				<TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectedEmployee.Id, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" IsReadOnly="True"/>
 				<TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedEmployee.Name, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
 				<DatePicker Grid.Row="2" Grid.Column="1" SelectedDate="{Binding SelectedEmployee.DateOfBirth, UpdateSourceTrigger=PropertyChanged}"  VerticalAlignment="Center"/>
-				<ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Companies, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedEmployee.Company, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
-				<TextBox Grid.Row="4" Grid.Column="1" Text="{Binding SelectedEmployee.Card.UID, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
+				<TextBox Grid.Row="3" Grid.Column="1" Text="{Binding SelectedEmployee.Email, UpdateSourceTrigger=PropertyChanged}"  VerticalAlignment="Center"/>
+				<ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding Companies, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedEmployee.Company, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
+				<TextBox Grid.Row="5" Grid.Column="1" Text="{Binding SelectedEmployee.Card.UID, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
 			</Grid>
 		</DockPanel>
 

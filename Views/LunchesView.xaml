@@ -17,7 +17,6 @@
 	<Grid Focusable="False">
 		<Grid.InputBindings>
 			<KeyBinding Key="Enter" Command="{Binding AddLunchCommand}" CommandParameter="{Binding ElementName=Text}"/>
-			<KeyBinding Key="Space" Command="{Binding MarkLunchAsPaidCommand}"/>
 		</Grid.InputBindings>
 
 		<Grid.RowDefinitions>
@@ -25,7 +24,7 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
-		<DataGrid x:Name="DataGrid" IsReadOnly="True" Focusable="False" AutoGenerateColumns="False" ItemsSource="{Binding Lunches}" SelectedItem="{Binding SelectedLunch}">
+		<DataGrid x:Name="DataGrid" IsReadOnly="True" Focusable="False" AutoGenerateColumns="False" ItemsSource="{Binding Lunches}" SelectedItem="{Binding SelectedLunch}" SelectionMode="Extended">
 			<DataGrid.ItemContainerStyle>
 				<Style TargetType="DataGridRow">
 					<Style.Triggers>
@@ -48,7 +47,7 @@
 
 			<DataGrid.ContextMenu>
 				<ContextMenu>
-					<MenuItem Header="Пометить оплаченным" Command="{Binding MarkLunchAsPaidCommand}"/>
+					<MenuItem Header="Пометить оплаченным" CommandParameter="{Binding PlacementTarget.SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType=ContextMenu}}" Command="{Binding MarkLunchAsPaidCommand}"/>
 					<Separator/>
 					<MenuItem Header="Удалить обед" Command="{Binding RemoveLunchCommand}"/>
 				</ContextMenu>

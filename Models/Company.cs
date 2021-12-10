@@ -25,5 +25,12 @@ namespace KHRCafeteria.Models
 			get => _LunchPrice;
 			set => Set(ref _LunchPrice, value);
 		}
+
+		private string _Email;
+		public string Email
+		{
+			get => _Email;
+			set => Set(ref _Email, value);
+		}
 	}
 }

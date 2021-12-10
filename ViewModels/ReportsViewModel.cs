@@ -5,11 +5,14 @@ using KHRCafeteria.DataContext;
 using KHRCafeteria.Models;
 using KHRCafeteria.Repositories;
 using KHRCafeteria.ViewModels.Base;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Text;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -89,6 +92,13 @@ namespace KHRCafeteria.ViewModels
 			get => _OnlyUnpaid;
 			set => Set(ref _OnlyUnpaid, value);
 		}
+
+		private bool _SendToEmail;
+		public bool SendToEmail
+		{
+			get => _SendToEmail;
+			set => Set(ref _SendToEmail, value);
+		}
 		#endregion
 
 		#region Commands
@@ -135,7 +145,7 @@ namespace KHRCafeteria.ViewModels
 			else
 			{
 				Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-				SaveFileDialog saveDialog = new SaveFileDialog();
+				System.Windows.Forms.SaveFileDialog saveDialog = new System.Windows.Forms.SaveFileDialog();
 				saveDialog.Title = "Сохранение отчета";
 				saveDialog.InitialDirectory = Directory.GetCurrentDirectory();
 				saveDialog.FileName = $"Отчет {DateTime.Now.ToString("F").Replace(":", " ")}";
@@ -177,12 +187,50 @@ namespace KHRCafeteria.ViewModels
 					table.AddCell(new Phrase(lunch.Price.ToString() + "р.", font));
 					table.AddCell(new Phrase(Convert.ToInt32(lunch.IsPaid).ToString(), font));
 				}
-
 				doc.Add(table);
 				doc.Close();
-
 				MessageBox.Show("Pdf-документ сохранен");
+
+				if (this.SendToEmail == true)
+				{
+					if (this.SendReportToEmail(saveDialog.FileName))
+						MessageBox.Show("Отчет отправлен");
+					else
+						MessageBox.Show("При отправке отчета произошла ошибка!");
+				}
 			}
+		}
+		#endregion
+
+		#region Methods
+		private bool SendReportToEmail(string reportPath)
+		{
+			string toMail;
+			if (this.SelectedCompany != null)
+				toMail = this.SelectedCompany.Email;
+			else if (this.SelectedEmployee != null)
+				toMail = this.SelectedEmployee.Email;
+			else
+				return false;
+
+			if (String.IsNullOrEmpty(toMail))
+				return false;
+			else
+			{
+				MailAddress from = new MailAddress("elenat@khrussia.ru", "КХ 'Россия'");
+				MailAddress to = new MailAddress(toMail);
+				MailMessage mail = new MailMessage(from, to);
+
+				mail.Subject = "Отчет по обедам";
+				mail.Attachments.Add(new Attachment(reportPath));
+
+				SmtpClient smtp = new SmtpClient("mail.hosting.reg.ru", 587);
+				smtp.Credentials = new NetworkCredential("elenat@khrussia.ru", "g$v35glav#");
+				smtp.EnableSsl = false;
+				smtp.Send(mail);
+			}
+
+			return true;
 		}
 		#endregion
 	}

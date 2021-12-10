@@ -1,4 +1,4 @@
-﻿	using KHRCafeteria.Models;
+﻿using KHRCafeteria.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Configuration;
@@ -12,13 +12,13 @@ namespace KHRCafeteria.DataContext
 		public DbSet<Card> Cards { get; set; }
 		public DbSet<Lunch> Lunches { get; set; }
 
-		public BaseDataContext(DbContextOptions<BaseDataContext> contextOptions) : base(contextOptions) { }
-
 		public BaseDataContext()
 		{
 			//Database.EnsureDeleted();
-			Database.EnsureCreated();
+			//Database.EnsureCreated();
 		}
+
+		public BaseDataContext(DbContextOptions<BaseDataContext> contextOptions) : base(contextOptions) { }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{

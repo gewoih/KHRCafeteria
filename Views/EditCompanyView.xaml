@@ -20,6 +20,7 @@
 					<RowDefinition/>
 					<RowDefinition/>
 					<RowDefinition/>
+					<RowDefinition/>
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition/>
@@ -28,11 +29,13 @@
 
 				<TextBlock Grid.Row="0" Text="ID компании: " VerticalAlignment="Center"/>
 				<TextBlock Grid.Row="1" Text="Название: " VerticalAlignment="Center"/>
-				<TextBlock Grid.Row="2" Text="Стоимость обеда: " VerticalAlignment="Center"/>
+				<TextBlock Grid.Row="2" Text="Email: " VerticalAlignment="Center"/>
+				<TextBlock Grid.Row="3" Text="Стоимость обеда: " VerticalAlignment="Center"/>
 
 				<TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectedCompany.Id, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
 				<TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedCompany.Name, UpdateSourceTrigger=PropertyChanged}"/>
-				<TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedCompany.LunchPrice, UpdateSourceTrigger=PropertyChanged}"/>
+				<TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedCompany.Email, UpdateSourceTrigger=PropertyChanged}"/>
+				<TextBox Grid.Row="3" Grid.Column="1" Text="{Binding SelectedCompany.LunchPrice, UpdateSourceTrigger=PropertyChanged}"/>
 			</Grid>
 		</DockPanel>
 

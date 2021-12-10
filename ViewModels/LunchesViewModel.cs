@@ -4,6 +4,7 @@ using KHRCafeteria.Models;
 using KHRCafeteria.Repositories;
 using KHRCafeteria.ViewModels.Base;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -54,11 +55,18 @@ namespace KHRCafeteria.ViewModels
 
 		#region Commands
 		public ICommand MarkLunchAsPaidCommand { get; }
-		private bool CanMarkLunchAsPaidCommandExecute(object p) => this.SelectedLunch != null && this.SelectedLunch.IsPaid == false;
+		private bool CanMarkLunchAsPaidCommandExecute(object p) => p != null && ((IList)p).Count != 0;
 		public void OnMarkLunchAsPaidCommandExecuted(object p)
 		{
-			this.SelectedLunch.IsPaid = true;
-			new LunchesRepository(new BaseDataContext()).Update(this.SelectedLunch);
+			IEnumerable<Lunch> collection = ((IList)p).Cast<Lunch>();
+			List<Lunch> SelectedItems = collection.ToList();
+
+			LunchesRepository lunchesRepository = new LunchesRepository(new BaseDataContext());
+			foreach (var l in SelectedItems)
+			{
+				l.IsPaid = true;
+				lunchesRepository.Update(l);
+			}
 			MessageBox.Show("Обед успешно оплачен!");
 		}
 

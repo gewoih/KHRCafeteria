@@ -8,7 +8,7 @@
              xmlns:local="clr-namespace:KHRCafeteria.Views"
 			 xmlns:vm="clr-namespace:KHRCafeteria.ViewModels"
              mc:Ignorable="d" 
-             Height="500" Width="450"
+             Height="550" Width="500"
 			 FontSize="22"
 			 WindowStartupLocation="CenterScreen">
 
@@ -29,6 +29,7 @@
 					<RowDefinition/>
 					<RowDefinition/>
 					<RowDefinition/>
+					<RowDefinition/>
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition/>
@@ -39,6 +40,7 @@
 				<TextBlock Grid.Row="1" Text="Сотрудник: " HorizontalAlignment="Right" VerticalAlignment="Center"/>
 				<TextBlock Grid.Row="2" Text="Компания: " HorizontalAlignment="Right" VerticalAlignment="Center"/>
 				<TextBlock Grid.Row="3" Text="Неоплаченные: " HorizontalAlignment="Right" VerticalAlignment="Center"/>
+				<TextBlock Grid.Row="4" Text="Отправить по почте: " HorizontalAlignment="Right" VerticalAlignment="Center"/>
 
 				<Viewbox Grid.Row="0" Grid.Column="1" Stretch="Fill" VerticalAlignment="Center">
 					<Calendar Name="Cal" SelectionMode="SingleRange">
@@ -52,6 +54,7 @@
 				<ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Employees}" SelectedItem="{Binding SelectedEmployee}" DisplayMemberPath="Name" VerticalAlignment="Center"/>
 				<ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Companies}" SelectedItem="{Binding SelectedCompany}" DisplayMemberPath="Name" VerticalAlignment="Center"/>
 				<CheckBox Grid.Row="3" Grid.Column="1" IsChecked="{Binding OnlyUnpaid}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+				<CheckBox Grid.Row="4" Grid.Column="1" IsChecked="{Binding SendToEmail}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 			</Grid>
 		</DockPanel>
 

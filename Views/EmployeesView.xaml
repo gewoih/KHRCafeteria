@@ -18,6 +18,7 @@
 				<DataGridTextColumn Header="ID" Binding="{Binding Id}"/>
 				<DataGridTextColumn Header="Имя сотрудника" Binding="{Binding Name}"/>
 				<DataGridTextColumn Header="Дата рождения" Binding="{Binding DateOfBirth, StringFormat=\{0:dd.MM.yyyy\}г., ConverterCulture=ru}"/>
+				<DataGridTextColumn Header="Email" Binding="{Binding Email}"/>
 				<DataGridTextColumn Header="Компания" Binding="{Binding Company.Name}"/>
 				<DataGridTextColumn Header="Номер карты" Binding="{Binding Card.UID}"/>
 			</DataGrid.Columns>
