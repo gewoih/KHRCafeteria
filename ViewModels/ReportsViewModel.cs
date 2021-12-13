@@ -5,6 +5,7 @@ using KHRCafeteria.DataContext;
 using KHRCafeteria.Models;
 using KHRCafeteria.Repositories;
 using KHRCafeteria.ViewModels.Base;
+using KHRCafeteria.Views;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -25,15 +26,19 @@ namespace KHRCafeteria.ViewModels
 		#region Constructor
 		public ReportsViewModel()
 		{
-			this.Companies = new ObservableCollection<Company>(new CompaniesRepository(new BaseDataContext()).GetAll());
-			this.Employees = new ObservableCollection<Employee>(new EmployeesRepository(new BaseDataContext()).GetAll());
+			this.Companies = new ObservableCollection<Company>(new CompaniesRepository(new BaseDataContext()).GetAll().Where(c => !String.IsNullOrEmpty(c.Email)));
+			this.Employees = new ObservableCollection<Employee>(new EmployeesRepository(new BaseDataContext()).GetAll().Where(e => !String.IsNullOrEmpty(e.Email)));
 
 			this.SelectionCommand = new RelayCommand(OnSelectionCommandExecuted, CanSelectionCommandExecute);
 			this.CreateReportCommand = new RelayCommand(OnCreateReportCommandExecuted, CanCreateReportCommandExecute);
+			this.ShowChangeEmailWindowCommand = new RelayCommand(OnShowChangeEmailWindowCommandExecute, CanShowChangeEmailWindowCommandExecuted);
+			this.SaveNewEmailCommand = new RelayCommand(OnSaveNewEmailCommandExecute, CanSaveNewEmailCommandExecuted);
 		}
 		#endregion
 
 		#region Properties
+		private ChangeEmailView ChangeEmailView;
+
 		private DateTime _StartDate;
 		public DateTime StartDate
 		{
@@ -98,6 +103,20 @@ namespace KHRCafeteria.ViewModels
 		{
 			get => _SendToEmail;
 			set => Set(ref _SendToEmail, value);
+		}
+
+		private string _Email;
+		public string Email
+		{
+			get => _Email;
+			set => Set(ref _Email, value);
+		}
+
+		private string _Password;
+		public string Password
+		{
+			get => _Password;
+			set => Set(ref _Password, value);
 		}
 		#endregion
 
@@ -200,6 +219,33 @@ namespace KHRCafeteria.ViewModels
 				}
 			}
 		}
+
+		public ICommand ShowChangeEmailWindowCommand { get; }
+		private bool CanShowChangeEmailWindowCommandExecuted(object p) => true;
+		private void OnShowChangeEmailWindowCommandExecute(object p)
+		{
+			this.ChangeEmailView = new ChangeEmailView(this);
+			this.ChangeEmailView.ShowDialog();
+		}
+
+		public ICommand SaveNewEmailCommand { get; }
+		private bool CanSaveNewEmailCommandExecuted(object p) => true;
+		private void OnSaveNewEmailCommandExecute(object p)
+		{
+			if (!String.IsNullOrEmpty(this.Email) && !String.IsNullOrEmpty(this.Password))
+			{
+				FileStream fstream = new FileStream($"config.bin", FileMode.OpenOrCreate);
+				
+				byte[] array = System.Text.Encoding.Default.GetBytes($"{this.Email};{this.Password}");
+				fstream.Write(array, 0, array.Length);
+				fstream.Close();
+				MessageBox.Show("Email сохранен.");
+
+				this.ChangeEmailView.Close();
+			}
+			else
+				MessageBox.Show("Заполните все поля!");
+		}
 		#endregion
 
 		#region Methods
@@ -217,17 +263,33 @@ namespace KHRCafeteria.ViewModels
 				return false;
 			else
 			{
-				MailAddress from = new MailAddress("elenat@khrussia.ru", "КХ 'Россия'");
-				MailAddress to = new MailAddress(toMail);
-				MailMessage mail = new MailMessage(from, to);
+				FileStream fstream = File.OpenRead("config.bin");
+				byte[] array = new byte[fstream.Length];
+				fstream.Read(array, 0, array.Length);
+				string textFromFile = System.Text.Encoding.Default.GetString(array);
+				fstream.Close();
+				if (String.IsNullOrEmpty(textFromFile))
+					return false;
 
-				mail.Subject = "Отчет по обедам";
-				mail.Attachments.Add(new Attachment(reportPath));
+				try
+				{
+					MailAddress from = new MailAddress(textFromFile.Split(';')[0], "КХ 'Россия'");
+					MailAddress to = new MailAddress(toMail);
+					MailMessage mail = new MailMessage(from, to);
 
-				SmtpClient smtp = new SmtpClient("mail.hosting.reg.ru", 587);
-				smtp.Credentials = new NetworkCredential("elenat@khrussia.ru", "g$v35glav#");
-				smtp.EnableSsl = false;
-				smtp.Send(mail);
+					mail.Subject = "Отчет по обедам";
+					mail.Attachments.Add(new Attachment(reportPath));
+
+					SmtpClient smtp = new SmtpClient("mail.hosting.reg.ru", 587);
+					smtp.Credentials = new NetworkCredential(textFromFile.Split(';')[0], textFromFile.Split(';')[1]);
+					smtp.EnableSsl = false;
+
+					smtp.Send(mail);
+				}
+				catch
+				{
+					return false;
+				}
 			}
 
 			return true;

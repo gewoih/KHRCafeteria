@@ -148,7 +148,7 @@ namespace KHRCafeteria.ViewModels
 		}
 
 		public ICommand ActivateCardCommand { get; }
-		private bool CanActivateCardCommandExecute(object p) => this.SelectedEmployee != null && !this.SelectedEmployee.Card.IsActive;
+		private bool CanActivateCardCommandExecute(object p) => this.SelectedEmployee != null && this.SelectedEmployee.Card != null && !this.SelectedEmployee.Card.IsActive;
 		private void OnActivateCardCommandExecuted(object p)
 		{
 			//Спрашиваем пользователя
@@ -166,7 +166,7 @@ namespace KHRCafeteria.ViewModels
 		}
 
 		public ICommand DeactivateCardCommand { get; }
-		private bool CanDeactivateCardCommandExecute(object p) => this.SelectedEmployee != null && this.SelectedEmployee.Card.IsActive;
+		private bool CanDeactivateCardCommandExecute(object p) => this.SelectedEmployee != null && this.SelectedEmployee.Card != null && this.SelectedEmployee.Card.IsActive;
 		private void OnDeactivateCardCommandExecuted(object p)
 		{
 			//Спрашиваем пользователя
@@ -217,19 +217,8 @@ namespace KHRCafeteria.ViewModels
 
 				if (dialogResult == DialogResult.Yes)
 				{
-					CardsRepository CardsRepository = new CardsRepository(new BaseDataContext());
-					CardsRepository.Delete(CardsRepository.GetAll().FirstOrDefault(c => c.EmployeeId == this.SelectedEmployee.Id).Id);
-
 					//Обновляем сотрудника
 					new EmployeesRepository(new BaseDataContext()).Update(this.SelectedEmployee);
-					//Создаем карту
-					this.SelectedEmployee.Card = CardsRepository.Create(
-					new Card
-					{
-						UID = this.SelectedEmployee.Card.UID,
-						Employee = this.SelectedEmployee,
-						IsActive = true
-					});
 
 					//Закрываем окно создания сотрудника
 					this._EditEmployeeView.Close();

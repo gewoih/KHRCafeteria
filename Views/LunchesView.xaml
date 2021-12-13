@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:KHRCafeteria.Views"
 			 xmlns:vm="clr-namespace:KHRCafeteria.ViewModels"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
 			 Focusable="False"
 			 Loaded="UserControl_Loaded">
@@ -24,7 +24,7 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
-		<DataGrid x:Name="DataGrid" IsReadOnly="True" Focusable="False" AutoGenerateColumns="False" ItemsSource="{Binding Lunches}" SelectedItem="{Binding SelectedLunch}" SelectionMode="Extended">
+		<DataGrid x:Name="DataGrid" IsReadOnly="True" Focusable="False" AutoGenerateColumns="False" ItemsSource="{Binding Lunches}" SelectedItem="{Binding SelectedLunch}" SelectionMode="Extended" FontSize="34">
 			<DataGrid.ItemContainerStyle>
 				<Style TargetType="DataGridRow">
 					<Style.Triggers>

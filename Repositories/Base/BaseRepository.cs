@@ -43,7 +43,8 @@ namespace KHRCafeteria.Repositories.Base
 
 		public virtual void Update(T entity)
 		{
-			_dbContext.Entry(entity).State = EntityState.Modified;
+			_dbContext.Set<T>().Update(entity);
+			//_dbContext.Entry(entity).State = EntityState.Modified;
 			_dbContext.SaveChanges();
 		}
 
