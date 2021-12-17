@@ -48,6 +48,7 @@
 			<DataGrid.ContextMenu>
 				<ContextMenu>
 					<MenuItem Header="Пометить оплаченным" CommandParameter="{Binding PlacementTarget.SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType=ContextMenu}}" Command="{Binding MarkLunchAsPaidCommand}"/>
+					<MenuItem Header="Снять оплату" CommandParameter="{Binding PlacementTarget.SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType=ContextMenu}}" Command="{Binding MarkLunchAsUnpaidCommand}"/>
 					<Separator/>
 					<MenuItem Header="Удалить обед" Command="{Binding RemoveLunchCommand}"/>
 				</ContextMenu>

@@ -26,8 +26,8 @@ namespace KHRCafeteria.ViewModels
 		#region Constructor
 		public ReportsViewModel()
 		{
-			this.Companies = new ObservableCollection<Company>(new CompaniesRepository(new BaseDataContext()).GetAll().Where(c => !String.IsNullOrEmpty(c.Email)));
-			this.Employees = new ObservableCollection<Employee>(new EmployeesRepository(new BaseDataContext()).GetAll().Where(e => !String.IsNullOrEmpty(e.Email)));
+			this.Companies = new ObservableCollection<Company>(new CompaniesRepository(new BaseDataContext()).GetAll().OrderBy(c => c.Name));
+			this.Employees = new ObservableCollection<Employee>(new EmployeesRepository(new BaseDataContext()).GetAll().OrderBy(e => e.Name));
 
 			this.SelectionCommand = new RelayCommand(OnSelectionCommandExecuted, CanSelectionCommandExecute);
 			this.CreateReportCommand = new RelayCommand(OnCreateReportCommandExecuted, CanCreateReportCommandExecute);

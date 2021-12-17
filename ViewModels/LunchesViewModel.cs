@@ -10,8 +10,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Media;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 
@@ -27,6 +25,7 @@ namespace KHRCafeteria.ViewModels
 			this.AddLunchCommand = new RelayCommand(OnAddLunchCommandExecuted, CanAddLunchCommandExecute);
 			this.RemoveLunchCommand = new RelayCommand(OnRemoveLunchCommandExecuted, CanRemoveLunchCommandExecute);
 			this.MarkLunchAsPaidCommand = new RelayCommand(OnMarkLunchAsPaidCommandExecuted, CanMarkLunchAsPaidCommandExecute);
+			this.MarkLunchAsUnpaidCommand = new RelayCommand(OnMarkLunchAsUnpaidCommandExecuted, CanMarkLunchAsUnpaidCommandExecute);
 		}
 		#endregion
 
@@ -67,7 +66,23 @@ namespace KHRCafeteria.ViewModels
 				l.IsPaid = true;
 				lunchesRepository.Update(l);
 			}
-			MessageBox.Show("Обед успешно оплачен!");
+			MessageBox.Show("Пометка об оплате проставлена!");
+		}
+
+		public ICommand MarkLunchAsUnpaidCommand { get; }
+		private bool CanMarkLunchAsUnpaidCommandExecute(object p) => p != null && ((IList)p).Count != 0;
+		public void OnMarkLunchAsUnpaidCommandExecuted(object p)
+		{
+			IEnumerable<Lunch> collection = ((IList)p).Cast<Lunch>();
+			List<Lunch> SelectedItems = collection.ToList();
+
+			LunchesRepository lunchesRepository = new LunchesRepository(new BaseDataContext());
+			foreach (var l in SelectedItems)
+			{
+				l.IsPaid = false;
+				lunchesRepository.Update(l);
+			}
+			MessageBox.Show("Пометка об оплате снята!");
 		}
 
 		public ICommand AddLunchCommand { get; }
